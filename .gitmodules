@@ -1,0 +1,8 @@
+[submodule "ui/src"]
+	path = ui/src
+	url = https://gitee.com/AHEAD4/go-view
+	branch = master-fetch
+[submodule "serve/src"]
+	path = serve/src
+	url = https://gitee.com/MTrun/go-view-serve
+	branch = master
