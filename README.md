@@ -12,13 +12,15 @@
 先下载安装Docker
 https://www.docker.com/
 
-##### 3.使用发布到docker hub的镜像启动
+##### 2.使用发布到docker hub的镜像启动
 
 ​	首先clone源代码后进入项目根目录
 
-​	运行`docker-compose pull`，完成等待镜像拉取完成。
+​	运行`docker-compose pull`，等待镜像拉取完成。
 
-​    运行`docker-compose up -d`，服务启动后进入后台运行。
+​    运行`docker-compose up -d`，启动服务后进入后台运行。
+
+​	使用浏览器访问http://127.0.0.1:7080/
 
 > ​	注意：数据库未做持久化，如需持久化请挂载卷或宿主机目录（参考yml中被db备注的volume配置）
 
