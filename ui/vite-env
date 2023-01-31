@@ -1,0 +1,8 @@
+# port
+VITE_DEV_PORT = '8080'
+
+# development path
+VITE_DEV_PATH = 'https://demo.mtruning.club'
+
+# production path 这里留空让前端支持相对路径调用API
+VITE_PRO_PATH = ''

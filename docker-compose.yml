@@ -1,0 +1,87 @@
+version: '3.4'
+# 公共日志配置
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+    labels: application.name,application.type
+# 公共资源限制配置
+x-resource:
+  &defaut-resource
+  resources:
+    limits:
+      memory: 512M
+
+services:
+  # 前端nginx
+  ui:
+    image: hn4930/go-view:latest
+    restart: always
+    ## 等待server启动
+    depends_on:
+      - serve
+    ## 如果通过其他方式已经构建了镜像，可将此处注释
+    build:
+      context: ./ui
+    ports:
+      - "7080:80"
+    networks:
+      - app_net
+    volumes:
+      - ./ui/http.conf:/etc/nginx/conf.d/http.conf
+  # 后台服务
+  serve:
+    image: hn4930/go-view-serve:latest
+    restart: always
+    ## 等待mysql启动
+    depends_on:
+      - db
+    ## 如果通过其他方式已经构建了镜像，可将此处注释
+    build:
+      context: ./serve
+    ## 后台服务端口通过虚拟局域网访问，从nginx代理，这里可以按需打开端口
+    #    ports:
+    #      - "8080:8080"
+    environment:
+      ## 覆盖关于文件上传的配置
+      SPRING_APPLICATION_JSON: '{"fuce":{"default-base-dir":"/data/files", "upload_img_url": "/static/file_upload/"}}'
+      ## 数据库配置
+      SPRING_DATASOURCE_DRUID_MASTER_URL: 'jdbc:mysql://db:3306/springbootv2?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false'
+      SPRING_DATASOURCE_DRUID_MASTER_USERNAME: root
+      SPRING_DATASOURCE_DRUID_MASTER_PASSWORD: root
+    networks:
+      - app_net
+    logging: *default-logging
+    deploy: *defaut-resource
+
+  # mysql数据库，如果需要使用其他数据可将此服务注释并修改后台数据库连接字符串
+  db:
+    image: mysql/mysql-server:5.7
+    restart: always
+    ## 数据库服务端口通过虚拟局域网访问，这里可以按需打开端口
+    #    ports:
+    #      - "3306:3306"
+    environment:
+      # root密码
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: springbootv2
+    volumes:
+      #      ## 数据库持久化
+      #      - /data/deploy/mysql:/var/lib/mysql
+      ## 初始化脚本
+      - ./0_init_db.sql:/docker-entrypoint-initdb.d/0_init_db.sql
+      ## 业务数据初始化脚本
+      - ./serve/src/doc/goview_v2.sql:/docker-entrypoint-initdb.d/goview_v2.sql
+    networks:
+      - app_net
+    logging: *default-logging
+    deploy: *defaut-resource
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 173.17.0.0/16
