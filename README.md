@@ -14,11 +14,12 @@ https://www.docker.com/
 
 ##### 2.使用发布到docker hub的镜像启动
 
-​	首先clone源代码后进入项目根目录
+​	首先clone源代码后进入项目根目录，命令`git clone --recursive https://gitee.com/MTrun/go-view-serve`
+        如果不自己构建镜像，可以不带`--recursive`
 
 ​	运行`docker-compose pull`，等待镜像拉取完成。
 
-​    运行`docker-compose up -d`，启动服务后进入后台运行。
+​        运行`docker-compose up -d`，启动服务后进入后台运行。
 
 ​	使用浏览器访问http://127.0.0.1:7080/
 
