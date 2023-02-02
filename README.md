@@ -14,7 +14,7 @@ https://www.docker.com/
 
 ##### 2.使用发布到docker hub的镜像启动
 
-​	首先clone源代码后进入项目根目录，命令`git clone --recursive https://gitee.com/MTrun/go-view-serve`
+​	首先clone源代码后进入项目根目录，命令`git clone --recursive https://gitee.com/AHEAD4/go-view-docker`
         `--recursive`是必须的否则会缺少源代码。
 
 ​	运行`docker-compose pull`，等待镜像拉取完成。
